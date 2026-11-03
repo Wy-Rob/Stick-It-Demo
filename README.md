@@ -1,2 +1,2 @@
 # Stick-It
-NIL Platform for U of U RedRocks Gymnastics 
+NIL Platform for U of Utah RedRocks Gymnastics 
