@@ -1,19 +1,41 @@
-import { contracts } from "../../data/sampleData";
+import { fmt, paidOf } from "../../data/sampleData";
 
-export default function Earnings() {
-  const mine = contracts.filter((c) => c.athleteId === 1);
-  const total = mine.reduce((sum, c) => sum + c.paid, 0);
-  const pending = mine.reduce((sum, c) => sum + (c.amount - c.paid), 0);
+const ME = 1;
+
+export default function Earnings({ store }) {
+  const mine = store.contracts.filter((c) => c.athleteId === ME);
+  const cash = mine.filter((c) => c.type === "Cash");
+  const paid = cash.reduce((s, c) => s + paidOf(c), 0);
+  const upcoming = cash.filter((c) => c.status === "Active").reduce((s, c) => s + (c.amount - paidOf(c)), 0);
+  const pipeline = cash.filter((c) => c.status === "Pending").reduce((s, c) => s + c.amount, 0);
+  const inKind = mine.filter((c) => c.type === "Product").reduce((s, c) => s + c.amount, 0);
+
   return (
-    <div>
-      <h2>Your Earnings</h2>
-      <p><strong>Paid so far:</strong> ${total}</p>
-      <p><strong>Still to come:</strong> ${pending}</p>
-      <ul>
+    <div className="wrap">
+      <h2>Earnings</h2>
+      <p className="sub">Paid as deliverables are completed (sample data, payouts would run through the department's payment system).</p>
+
+      <div className="card" style={{ marginBottom: 16 }}>
+        <div className="muted">Paid so far</div>
+        <div className="big">{fmt(paid)}</div>
+      </div>
+
+      <div className="stats">
+        <div className="stat"><b>{fmt(upcoming)}</b><span>Still to earn on active deals</span></div>
+        <div className="stat"><b>{fmt(pipeline)}</b><span>Pending offers</span></div>
+        <div className="stat"><b>{fmt(inKind)}</b><span>In-kind product value</span></div>
+      </div>
+
+      <h3>By deal</h3>
+      <div className="grid">
         {mine.map((c) => (
-          <li key={c.id}>{c.sponsor}: ${c.paid} of ${c.amount} ({c.status})</li>
+          <div key={c.id} className="card deal">
+            <div className="head"><strong>{c.sponsor}</strong><span className="pill">{c.type}</span></div>
+            <div className="progress"><i style={{ width: (c.done / c.total) * 100 + "%" }} /></div>
+            <div className="muted">{fmt(paidOf(c))} of {fmt(c.amount)} · {c.status}</div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
