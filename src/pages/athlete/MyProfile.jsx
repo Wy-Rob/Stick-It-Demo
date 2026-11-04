@@ -1,20 +1,19 @@
-import { athletes, organization, paidOf, fmt } from "../../data/sampleData";
+import { ME, organization, paidOf, fmt } from "../../data/sampleData";
 import Avatar from "../../components/Avatar";
 
 export default function MyProfile({ store }) {
-  const me = athletes[0];
-  const mine = store.contracts.filter((c) => c.athleteId === me.id);
+  const mine = store.contracts.filter((c) => c.athleteId === ME.id);
   const earned = mine.filter((c) => c.type === "Cash").reduce((s, c) => s + paidOf(c), 0);
+
   return (
     <div className="wrap">
       <div className="cover" />
-      <div className="profile-head">  
-        <Avatar name={me.name} size={120} src="/images/athlete-1.jpg" />
+      <div className="profile-head">
+        <Avatar name={ME.name} size={120} src={`/images/roster/${ME.slug}.jpg`} />
         <div style={{ flex: 1, paddingBottom: 6 }}>
-          <h2 style={{ marginBottom: 4 }}>{me.name}</h2>
+          <h2 style={{ marginBottom: 4 }}>{ME.name}</h2>
           <span className="pill red">{organization.name} Circle</span>
-          <span className="pill green">Verified</span>
-          <div className="muted">{me.year} · {me.event} · {me.hometown}</div>
+          <div className="muted">{ME.year} · {ME.hometown}</div>
         </div>
         <div className="row">
           <button className="btn small" onClick={() => store.notify("Media kit link copied (demo)")}>Share media kit</button>
@@ -23,18 +22,23 @@ export default function MyProfile({ store }) {
       </div>
 
       <div className="stats">
-        <div className="stat"><b>{(me.followers / 1000).toFixed(1)}K</b><span>Followers (sample)</span></div>
-        <div className="stat"><b>{mine.length}</b><span>Deals</span></div>
-        <div className="stat"><b>{fmt(earned)}</b><span>Earned so far</span></div>
+        <div className="stat"><b>{ME.year}</b><span>Year</span></div>
+        <div className="stat"><b>{mine.length}</b><span>Deals (sample)</span></div>
+        <div className="stat"><b>{fmt(earned)}</b><span>Earned so far (sample)</span></div>
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>My story</h3>
-        <p>{me.story}</p>
-        <h3>Brand pillars</h3>
-        <div>{me.pillars.map((p) => <span key={p} className="pill red">{p}</span>)}</div>
-        <h3>Open to</h3>
-        <div>{me.interests.map((i) => <span key={i} className="pill">{i} partnerships</span>)}</div>
+        <h3 style={{ marginTop: 0 }}>About</h3>
+        <p className="muted">Height {ME.height} · Last school {ME.lastSchool}</p>
+
+        <h3>My story</h3>
+        <p className="muted">
+          Sample layout only. In the live product, {ME.name.split(" ")[0]} writes her own story here, or builds it
+          with the AI helper from a short interview.
+        </p>
+
+        <h3>Open to (sample tags)</h3>
+        <div>{ME.interests.map((i) => <span key={i} className="pill red">{i} partnerships</span>)}</div>
       </div>
     </div>
   );

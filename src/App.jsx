@@ -17,18 +17,22 @@ const menus = {
 export default function App() {
   const [role, setRole] = useState(null);
   const [page, setPage] = useState("home");
+  const [signinRole, setSigninRole] = useState("athlete");
   const [contracts, setContracts] = useState(initialContracts);
   const [toast, setToast] = useState("");
 
   const notify = (m) => { setToast(m); setTimeout(() => setToast(""), 2800); };
   const store = { contracts, setContracts, notify, goto: setPage };
 
-  const signOut = () => { setRole(null); setPage("home"); };
-  const signIn = (r) => { setRole(r); setPage(Object.keys(menus[r])[0]); };
+  const goHome = () => { setRole(null); setPage("home"); window.scrollTo(0, 0); };
+  const openSignIn = (r) => { setSigninRole(r); setPage("signin"); window.scrollTo(0, 0); };
+  const signIn = (r) => { setRole(r); setPage(Object.keys(menus[r])[0]); window.scrollTo(0, 0); };
 
   let body;
   if (!role) {
-    body = page === "signin" ? <SignIn onSignIn={signIn} /> : <Home onSignIn={() => setPage("signin")} />;
+    body = page === "signin"
+      ? <SignIn key={signinRole} initialRole={signinRole} onSignIn={signIn} onBack={goHome} />
+      : <Home onSignIn={() => openSignIn("athlete")} onBusiness={() => openSignIn("business")} />;
   } else {
     const Screen = menus[role][page];
     body = <Screen store={store} />;
@@ -36,9 +40,9 @@ export default function App() {
 
   return (
     <>
-      <div className="topbar">
-        <button className="brand" onClick={signOut}>Stick <span>It</span></button>
-        {role && (
+      {role && (
+        <div className="topbar">
+          <button className="brand" onClick={goHome}>Stick <span>It</span></button>
           <div className="tabs">
             {Object.keys(menus[role]).map((name) => (
               <button key={name} className={"tab" + (page === name ? " active" : "")} onClick={() => setPage(name)}>
@@ -46,12 +50,11 @@ export default function App() {
               </button>
             ))}
           </div>
-        )}
-        <div className="spacer" />
-        <span className="demo">Demo data</span>
-        {role ? <button className="btn small" onClick={signOut}>Sign out</button>
-              : <button className="btn small primary" onClick={() => setPage("signin")}>Sign in</button>}
-      </div>
+          <div className="spacer" />
+          <span className="demo">Demo data</span>
+          <button className="btn small" onClick={goHome}>Sign out</button>
+        </div>
+      )}
       {body}
       {toast && <div className="toast">{toast}</div>}
     </>

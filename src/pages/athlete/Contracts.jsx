@@ -1,10 +1,8 @@
-import { fmt, paidOf } from "../../data/sampleData";
-
-const ME = 1;
+import { fmt, paidOf, ME } from "../../data/sampleData";
 
 export default function Contracts({ store }) {
   const { contracts, setContracts, notify } = store;
-  const mine = contracts.filter((c) => c.athleteId === ME);
+  const mine = contracts.filter((c) => c.athleteId === ME.id);
 
   const accept = (id) => {
     setContracts((cs) => cs.map((c) => (c.id === id ? { ...c, status: "Active" } : c)));

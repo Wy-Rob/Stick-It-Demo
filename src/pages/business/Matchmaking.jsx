@@ -12,13 +12,13 @@ export default function Matchmaking({ store }) {
     .sort((x, y) => y.score - x.score);
 
   const existing = (a) => contracts.find((c) => c.athleteId === a.id && c.sponsor === BUSINESS.name);
-  const priceOf = (a) => (a.tier === "star" ? 2500 : 500);
+  const priceOf = (a) => (a.featured ? 2500 : 500);
 
   const offer = (a) => {
-    const star = a.tier === "star";
     setContracts((cs) => [...cs, {
       id: Date.now(), athleteId: a.id, sponsor: BUSINESS.name, type: "Cash", amount: priceOf(a),
-      total: star ? 3 : 1, done: 0, obligation: star ? "2 posts + 1 meet-day feature" : "1 post + thank-you story",
+      total: a.featured ? 3 : 1, done: 0,
+      obligation: a.featured ? "2 posts + 1 meet-day feature" : "1 post + thank-you story",
       due: "Feb 1", status: "Pending",
     }]);
     notify(`Offer sent to ${a.name}`);
@@ -27,18 +27,21 @@ export default function Matchmaking({ store }) {
   return (
     <div className="wrap">
       <h2>Matchmaking</h2>
-      <p className="sub">Athletes ranked by fit for your business.</p>
+      <p className="sub">The 2027 Red Rocks, ranked by fit for your business.</p>
 
-      <div className="card row" style={{ marginBottom: 20 }}>
+      <div className="card row" style={{ marginBottom: 12 }}>
         <div style={{ flex: 1, minWidth: 200 }}>
           <strong>{BUSINESS.name}</strong> <span className="pill green">Verified</span>
           <div className="muted">Goal: {BUSINESS.goal}</div>
         </div>
         <div><label>What we are about</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)}>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</select></div>
-        <div><label>Where</label>
+        <div><label>Where we are</label>
           <select value={city} onChange={(e) => setCity(e.target.value)}>{CITIES.map((c) => <option key={c}>{c}</option>)}</select></div>
       </div>
+      <p className="muted" style={{ marginBottom: 20 }}>
+        Interest tags and offer prices are placeholders for the demo. Athletes set their own once they join.
+      </p>
 
       <div className="grid">
         {ranked.map(({ a, score, reasons }) => {

@@ -1,10 +1,27 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import { StrictMode, Component } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
 
-createRoot(document.getElementById('root')).render(
+class ErrorBoundary extends Component {
+  state = { error: null };
+  static getDerivedStateFromError(error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <pre style={{ padding: 24, color: "#BE0000", whiteSpace: "pre-wrap" }}>
+          {String(this.state.error.stack || this.state.error)}
+        </pre>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
-  </StrictMode>,
-)
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </StrictMode>
+);
