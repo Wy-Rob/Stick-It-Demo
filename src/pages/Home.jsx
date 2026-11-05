@@ -1,7 +1,8 @@
+import { roster, partners, TEAM_TYPES } from "../data/sampleData";
 import Photo from "../components/Photo";
-import { roster, partners, packages, fmt } from "../data/sampleData";
+import Snap from "../components/Snap";
 
-export default function Home({ onSignIn, onBusiness }) {
+export default function Home({ onSignIn, onBusiness, onFan }) {
   return (
     <>
       <section className="hero-full">
@@ -43,30 +44,52 @@ export default function Home({ onSignIn, onBusiness }) {
 
       <section className="band">
         <div className="wrap">
-          <h2>You're a bigger part of Red Rocks than you realize.</h2>
-          <p className="sub" style={{ maxWidth: 680 }}>
-            Every business that shows up, big or small, helps power the gymnasts and the Utes as a whole. And your name goes right along with them.
-          </p>
-
-          <div className="grid">
-            <div className="card"><h3 style={{ marginTop: 0 }}>Be seen by the community</h3><p className="muted">Authentic content from athletes and recognition at home meets put your business in front of people who care about Utah.</p></div>
-            <div className="card"><h3 style={{ marginTop: 0 }}>Back the whole program</h3><p className="muted">One partnership supports every gymnast, with money or with your products. It all goes toward the team.</p></div>
-            <div className="card"><h3 style={{ marginTop: 0 }}>Know what it's doing</h3><p className="muted">Simple results show you what your support brought in, so you can see the difference you're making.</p></div>
-          </div>
-
-          <h3 style={{ marginTop: 40 }}>Pick a way to partner</h3>
-          <div className="grid">
-            {packages.map((p) => (
-              <div key={p.id} className="card deal">
-                <strong style={{ fontSize: 18 }}>{p.name}</strong>
-                <div className="big" style={{ fontSize: 34 }}>{fmt(p.price)}</div>
-                <div className="muted">{p.includes}</div>
+          <div className="flank">
+            <Snap n={1} />
+            <div>
+              <h2>You're a bigger part of Red Rocks than you realize.</h2>
+              <p className="sub">Every business that shows up, big or small, helps power the gymnasts and the program as a whole. And your name goes right along with them.</p>
+              <div className="stack">
+                <div className="card"><h3 style={{ marginTop: 0 }}>Be part of the community</h3><p className="muted">A crowd that fills the arena and a team rooted in Utah. Partnering puts you inside that community, not just in front of it.</p></div>
+                <div className="card"><h3 style={{ marginTop: 0 }}>Back the whole program</h3><p className="muted">Team gear, fundraisers, events and everyday support. A team organizer shapes it with you so it fits what the team needs.</p></div>
+                <div className="card"><h3 style={{ marginTop: 0 }}>Grow together</h3><p className="muted">Athletes build their own brands and earn from it, and your business is part of the story.</p></div>
               </div>
-            ))}
+            </div>
+            <Snap n={2} />
           </div>
-          <p className="muted" style={{ marginTop: 10 }}>Sample pricing for the demo.</p>
-          <div style={{ marginTop: 22 }}>
+        </div>
+      </section>
+
+      <section className="wrap">
+        <h2>Ways to show up for the team</h2>
+        <p className="sub">Pick what fits your business. A team organizer works out the details with you.</p>
+        <div className="grid">
+          {TEAM_TYPES.map((t) => (
+            <div key={t.id} className="type-card" style={{ cursor: "default" }}>
+              <strong>{t.title}</strong>
+              <div className="muted">{t.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="wrap" style={{ paddingTop: 0 }}>
+        <h2>Out in the community</h2>
+        <p className="sub">Red Rocks shows up for Utah, and partners show up with them.</p>
+        <div className="photo-band">
+          <Snap n={5} />
+          <Snap n={6} />
+          <Snap n={7} />
+        </div>
+      </section>
+
+      <section className="band">
+        <div className="wrap" style={{ textAlign: "center" }}>
+          <h2>Who rocks the house?</h2>
+          <p className="sub" style={{ maxWidth: 560, margin: "0 auto 24px" }}>With you behind them, they do. Start a conversation with the team organizer today.</p>
+          <div className="row center">
             <button className="btn primary big-btn" onClick={onBusiness}>Get started as a business</button>
+            <button className="btn big-btn" onClick={onFan}>Join as a fan</button>
           </div>
         </div>
       </section>

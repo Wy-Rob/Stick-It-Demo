@@ -1,27 +1,27 @@
 import { useState } from "react";
-import { athletes, BUSINESS, CATEGORIES, CITIES, matchScore, fmt } from "../../data/sampleData";
+import { athletes, BUSINESS, CATEGORIES, CITIES, matchScore, feeMultiplier, fmt } from "../../data/sampleData";
 import AthleteCard from "../../components/AthleteCard";
+import OfferModal from "../../components/OfferModal";
 
 export default function Matchmaking({ store }) {
   const { contracts, setContracts, notify } = store;
   const [category, setCategory] = useState(BUSINESS.category);
   const [city, setCity] = useState(BUSINESS.city);
+  const [target, setTarget] = useState(null);
 
   const ranked = athletes
     .map((a) => ({ a, ...matchScore(category, city, a) }))
     .sort((x, y) => y.score - x.score);
 
   const existing = (a) => contracts.find((c) => c.athleteId === a.id && c.sponsor === BUSINESS.name);
-  const priceOf = (a) => (a.featured ? 2500 : 500);
 
-  const offer = (a) => {
+  const send = (a, o) => {
     setContracts((cs) => [...cs, {
-      id: Date.now(), athleteId: a.id, sponsor: BUSINESS.name, type: "Cash", amount: priceOf(a),
-      total: a.featured ? 3 : 1, done: 0,
-      obligation: a.featured ? "2 posts + 1 meet-day feature" : "1 post + thank-you story",
-      due: "Feb 1", status: "Pending",
+      id: Date.now(), athleteId: a.id, sponsor: BUSINESS.name, type: o.type, amount: o.amount,
+      total: o.total, done: 0, obligation: o.obligation, due: o.due, status: "Pending", messages: o.messages,
     }]);
     notify(`Offer sent to ${a.name}`);
+    setTarget(null);
   };
 
   return (
@@ -40,7 +40,7 @@ export default function Matchmaking({ store }) {
           <select value={city} onChange={(e) => setCity(e.target.value)}>{CITIES.map((c) => <option key={c}>{c}</option>)}</select></div>
       </div>
       <p className="muted" style={{ marginBottom: 20 }}>
-        Interest tags and offer prices are placeholders for the demo. Athletes set their own once they join.
+        Interest tags and fees are placeholders for the demo. Athletes set their own once they join.
       </p>
 
       <div className="grid">
@@ -48,13 +48,16 @@ export default function Matchmaking({ store }) {
           const ex = existing(a);
           return (
             <AthleteCard key={a.id} a={a} score={score} reasons={reasons}>
-              <button className="btn small primary" disabled={!!ex} onClick={() => offer(a)}>
-                {ex ? (ex.status === "Pending" ? "Offer sent" : "Partnered") : `Send offer · ${fmt(priceOf(a))}`}
+              <div className="muted">Posts from {fmt(150 * feeMultiplier(a))} (sample)</div>
+              <button className="btn small primary" disabled={!!ex} onClick={() => setTarget(a)}>
+                {ex ? (ex.status === "Pending" ? "Offer sent" : "Partnered") : "Make offer"}
               </button>
             </AthleteCard>
           );
         })}
       </div>
+
+      {target && <OfferModal a={target} business={BUSINESS} onClose={() => setTarget(null)} onSend={(o) => send(target, o)} />}
     </div>
   );
 }

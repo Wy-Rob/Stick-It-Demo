@@ -1,8 +1,7 @@
 import { fmt, paidOf, ME } from "../../data/sampleData";
 
 export default function Earnings({ store }) {
-  const mine = store.contracts.filter((c) => c.athleteId === ME.id);
-  const cash = mine.filter((c) => c.type === "Cash");
+  const mine = store.contracts.filter((c) => c.athleteId === ME.id && c.status !== "Declined");  const cash = mine.filter((c) => c.type === "Cash");
   const paid = cash.reduce((s, c) => s + paidOf(c), 0);
   const upcoming = cash.filter((c) => c.status === "Active").reduce((s, c) => s + (c.amount - paidOf(c)), 0);
   const pipeline = cash.filter((c) => c.status === "Pending").reduce((s, c) => s + c.amount, 0);

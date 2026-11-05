@@ -37,9 +37,16 @@ export const packages = [
 
 // SAMPLE deals for demo purposes only (fictional sponsors and amounts)
 export const contracts = [
-  { id: 1, athleteId: 7, sponsor: "Canyon Coffee Co.", type: "Cash", amount: 1200, total: 4, done: 2, obligation: "4 Instagram posts", due: "Jan 15", status: "Active" },
-  { id: 2, athleteId: 7, sponsor: "Smile Dental", type: "Cash", amount: 500, total: 1, done: 0, obligation: "1 meet-day feature", due: "Feb 1", status: "Pending" },
-  { id: 3, athleteId: 7, sponsor: "Red Rock Bakery", type: "Product", amount: 300, total: 2, done: 1, obligation: "2 posts for free pastries", due: "Jan 30", status: "Active" },
+  { id: 1, athleteId: 7, sponsor: "Canyon Coffee Co.", type: "Cash", amount: 1200, total: 4, done: 2, obligation: "4 Instagram posts", due: "Jan 15", status: "Active",
+    messages: [{ from: "sponsor", text: "Excited to partner! Posts can go up any time before Jan 15." }] },
+  { id: 2, athleteId: 7, sponsor: "Smile Dental", type: "Cash", amount: 500, total: 1, done: 0, obligation: "1 meet-day feature", due: "Feb 1", status: "Pending",
+    messages: [{ from: "sponsor", text: "We'd love you at our family night. Does this offer work?" }] },
+  { id: 3, athleteId: 7, sponsor: "Red Rock Bakery", type: "Product", amount: 300, total: 2, done: 1, obligation: "2 posts for free pastries", due: "Jan 30", status: "Active",
+    messages: [] },
+  { id: 4, athleteId: 7, sponsor: "Summit Auto", type: "Cash", amount: 800, total: 2, done: 0, obligation: "2 Instagram posts", due: "Feb 10", status: "Pending",
+    messages: [{ from: "sponsor", text: "Happy to adjust the dates if you're busy with meets." }] },
+  { id: 5, athleteId: 7, sponsor: "Utah Valley Smoothies", type: "Product", amount: 250, total: 2, done: 0, obligation: "2 posts for free smoothies", due: "Feb 20", status: "Pending",
+    messages: [] },
 ];
 
 export const notifications = [];
@@ -57,3 +64,84 @@ export function matchScore(category, city, a) {
   score += a.featured ? 8 : 6;
   return { score: Math.min(score, 99), reasons };
 }
+// Demo assumptions: dollars per 1,000 followers for one sponsored post. Replace with real market data.
+export const PLATFORMS = [
+  { key: "instagram", label: "Instagram", rate: 8 },
+  { key: "tiktok", label: "TikTok", rate: 6 },
+  { key: "youtube", label: "YouTube", rate: 10 },
+  { key: "x", label: "X", rate: 3 },
+];
+
+// Placeholder follower counts. The athlete enters her own.
+export const defaultProfile = {
+  about: "",
+  story: "",
+  interests: ["Fitness", "Food"],
+  followers: { instagram: 10000, tiktok: 5000, youtube: 1000, x: 500 },
+  photo: "",
+};
+
+export function estimateWorth(followers) {
+  const perPost = PLATFORMS.reduce((s, p) => s + ((followers[p.key] || 0) / 1000) * p.rate, 0);
+  const reach = PLATFORMS.reduce((s, p) => s + (followers[p.key] || 0), 0);
+  return {
+    reach,
+    perPost: Math.round(perPost),
+    low: Math.round(perPost * 0.6),
+    high: Math.round(perPost * 1.5),
+    monthly: Math.round(perPost * 4),
+  };
+}
+// SAMPLE fee menu. Athletes would set their own rates in the live product.
+export const DELIVERABLES = [
+  { id: "post", label: "Instagram post", price: 150 },
+  { id: "story", label: "Story set", price: 75 },
+  { id: "tiktok", label: "TikTok video", price: 150 },
+  { id: "meet", label: "Meet-day feature", price: 250 },
+  { id: "appearance", label: "In-person appearance", price: 300 },
+];
+
+export const GOALS = ["Local awareness", "Foot traffic", "Social content", "Community goodwill"];
+
+export const feeMultiplier = (a) => (a.featured ? 2 : 1);
+export const TEAM_TYPES = [
+  { id: "gear", title: "Team gear", desc: "Warm-ups, bags, practice wear or branded items for the roster." },
+  { id: "fundraising", title: "Team fundraising", desc: "Back a fundraiser, match donations or host a drive." },
+  { id: "event", title: "Event sponsorship", desc: "Sponsor a home meet night, a preview or a community clinic." },
+  { id: "support", title: "Team support", desc: "Meals, travel, recovery or everyday needs." },
+  { id: "community", title: "Community and outreach", desc: "Youth clinics, school visits and service days." },
+  { id: "custom", title: "Something else", desc: "Have a different idea? Tell the organizer." },
+];
+
+export const ORGANIZER = { name: "Red Rocks Team Organizer", role: "Your point of contact for team partnerships" };
+export const BUDGETS = ["Under $500", "$500 to $1,500", "$1,500 to $5,000", "$5,000 or more", "Product donation", "Not sure yet"];
+export const TIMELINES = ["This season", "Home meet in January", "Next month", "Flexible"];
+// SAMPLE prices and perks. Athletes and Red Rocks would set the real ones.
+export const FAN_EXPERIENCES = [
+  { id: "shoutout", title: "Video shout-out", desc: "A short personal video message.", price: 35 },
+  { id: "autograph", title: "Signed autograph", desc: "A signed card or photo.", price: 25 },
+  { id: "meet", title: "Meet and greet", desc: "A few minutes together at a home meet.", price: 60 },
+  { id: "social", title: "Social shout-out", desc: "A mention on her story or feed.", price: 20 },
+];
+
+export const MEMBER_TIERS = [
+  { id: "fan", name: "Supporter", price: 8, tag: "For every Red Rocks fan",
+    perks: ["Digital member card and badge", "First look at ticket and event offers", "Behind-the-scenes team content", "Member discount on team gear"] },
+  { id: "family", name: "Fan", price: 20, tag: "For dads, daughters and families", pop: true,
+    perks: ["Everything in Supporter", "Walk the floor before select meets", "Member family nights", "Junior member kit", "Meet the team at members' events"] },
+  { id: "all", name: "All Access", price: 50, tag: "For the biggest fans",
+    perks: ["Everything in Fan", "Private member events", "Watch a practice day", "Name on the Members wall", "Priority on individual experiences"] },
+];
+
+export const MEMBER_EVENTS = [
+  { title: "Floor walk before the January home opener", when: "Date to be confirmed (sample)" },
+  { title: "Fan family night", when: "Date to be confirmed (sample)" },
+  { title: "Members' meet and greet", when: "Date to be confirmed (sample)" },
+];
+
+export const MEET_ACTIONS = [
+  { id: "screen", title: "Message on the big screen", desc: "Birthdays, proposals, signs of support.", price: 5, kind: "text", ph: "Happy birthday Emma!" },
+  { id: "shoutout", title: "Announcer shout-out", desc: "Read aloud between rotations.", price: 10, kind: "text", ph: "Shout-out to the Johnson family!" },
+  { id: "song", title: "Song request", desc: "Pick the music between events.", price: 3, kind: "text", ph: "Song and artist" },
+  { id: "cheer", title: "Cheer for an athlete", desc: "A free cheer that lights up the screen.", price: 0, kind: "athlete" },
+];
